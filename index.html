@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5"
+    />
+    <meta name="theme-color" content="#172841" />
+    <meta
+      name="description"
+      content="Cat Adventure: Petualangan 3D bersama Oyen di Desa Willowbrook. Jelajahi desa, memancing, selesaikan misi, dan buru tikus ladang dengan Three.js!"
+    />
+    <title>Cat Adventure · Petualangan &amp; Perburuan Oyen</title>
+    <link rel="icon" href="./paw.svg" type="image/svg+xml" />
+    <link rel="preload" href="./art/willowbrook-dusk.jpg" as="image" />
+    <link
+      rel="preload"
+      href="./fonts/lilita.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <script type="module" crossorigin src="/AlvinHY/assets/index-DSnc2Agb.js"></script>
+    <link rel="stylesheet" crossorigin href="/AlvinHY/assets/index-BzkoYF6z.css">
+  </head>
+  <body>
+    <main id="app">
+      <div id="world" aria-label="Dunia 3D Desa Willowbrook"></div>
+
+      <section id="home" aria-label="Menu utama">
+        <div class="cover-art"></div>
+        <div class="cover-shade"></div>
+        <div id="fireflies" aria-hidden="true"></div>
+
+        <header class="menu-header">
+          <div class="studio">
+            <div class="studio-mark"><i data-icon="paw"></i></div>
+            <div class="wordmark">Pawberry<span>CAT ADVENTURE</span></div>
+          </div>
+          <div class="header-controls">
+            <button
+              class="sound-button glass"
+              data-action="sound"
+              aria-label="Matikan suara"
+            >
+              <i data-icon="sound"></i><span>Suara nyala</span>
+            </button>
+            <button
+              class="square-button glass"
+              data-action="fullscreen"
+              aria-label="Layar penuh"
+              title="Layar penuh"
+            >
+              <i data-icon="expand"></i>
+            </button>
+          </div>
+        </header>
+
+        <div class="hero-content">
+          <div class="eyebrow hero-eyebrow">
+            <i data-icon="sparkles"></i> PETUALANGAN &amp; PERBURUAN 3D <span></span>
+          </div>
+          <h1>
+            <span class="title-top">Cat</span>
+            <span class="title-bottom"
+              >Adventure<span class="title-sparkle">✦</span></span
+            >
+          </h1>
+          <p class="hero-description">
+            Cakar kecil. Petualangan besar.<br />
+            Jelajahi Desa Willowbrook yang luas bersama Oyen, kunjungi 5 toko
+            kucing, berteman dengan warga desa, dan usir serbuan tikus ladang!
+          </p>
+          <div class="menu-actions">
+            <button class="primary play-button" data-action="play">
+              <i data-icon="play"></i><span id="play-label">Mulai Petualangan</span
+              ><i class="end-icon" data-icon="arrowRight"></i>
+            </button>
+            <div class="secondary-row">
+              <button class="secondary" data-action="settings">
+                <i data-icon="settings"></i>Pengaturan
+              </button>
+              <button class="secondary" data-action="about">
+                <i data-icon="info"></i>Tentang
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="scene-caption">
+          <span class="scene-pin"><i data-icon="pin"></i></span>
+          <div>
+            <span class="caption-kicker">PETUALANGAN MENANTI</span>
+            <strong>Desa Willowbrook</strong>
+          </div>
+        </div>
+
+        <footer class="menu-footer">
+          <div class="footer-hints">
+            <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span> Gerak
+            <b>·</b>
+            <span class="mouse-hint"><i data-icon="mouse"></i></span> Seret Kamera / Klik Cakar
+            <b>·</b> <kbd>E</kbd> Makan &amp; Interaksi
+          </div>
+          <div class="touch-footer">
+            <i data-icon="hand"></i> Kontrol sentuh siap digunakan
+          </div>
+          <div class="version">
+            <span class="online-dot"></span> Progres tersimpan lokal
+            <b>•</b> <span>v1.0.0</span>
+          </div>
+        </footer>
+      </section>
+
+      <section id="hud" hidden aria-label="HUD Permainan">
+        <div id="hit-flash" class="hit-flash" aria-hidden="true"></div>
+        <div id="world-labels" aria-hidden="true"></div>
+        <div id="crosshair" class="crosshair" aria-hidden="true">
+          <b></b><i></i><i></i><i></i><i></i>
+        </div>
+
+        <div class="status-card panel">
+          <div class="profile-line">
+            <div class="cat-avatar" id="cat-avatar"></div>
+            <div>
+              <div class="tiny-label">PETUALANG DESA</div>
+              <strong>Oyen</strong>
+            </div>
+            <span class="state-label" id="cat-state">Santai</span>
+          </div>
+          <div class="stat-list" id="stat-list"></div>
+          <div class="buff-bar" id="buff-bar" hidden></div>
+        </div>
+
+        <div class="top-center-hud">
+          <div class="location-hud">
+            <i data-icon="pin"></i><span id="location-text">Alun-Alun Desa</span>
+          </div>
+          <div id="wave-hud" class="wave-hud">
+            <span class="wave-badge">
+              <i data-icon="target"></i>
+              <span id="wave-text">WAVE 01 · 05 TIKUS</span>
+            </span>
+            <button
+              id="next-wave-btn"
+              class="next-wave-btn"
+              data-action="nextWave"
+              hidden
+            >
+              <span>Wave Berikutnya</span><kbd>N</kbd>
+            </button>
+          </div>
+        </div>
+
+        <div class="inventory-hud">
+          <div class="inventory panel">
+            <span title="Koin"><i data-icon="coin"></i><b id="coins">0</b></span>
+            <span title="Ikan"><i data-icon="fish"></i><b id="fish">0</b></span>
+            <span title="Bintang"><i data-icon="star"></i><b id="stars">0</b></span>
+            <span title="Tikus Dikalahkan" class="kills-counter"
+              ><i data-icon="claw"></i><b id="kills">0</b></span
+            >
+          </div>
+          <button
+            class="square-button glass"
+            data-action="pause"
+            title="Jeda (Esc)"
+            aria-label="Jeda petualangan"
+          >
+            <i data-icon="pause"></i>
+          </button>
+        </div>
+
+        <div class="quest-panel panel">
+          <button
+            class="quest-tab"
+            data-action="toggleQuests"
+            aria-expanded="true"
+          >
+            <i data-icon="book"></i><span>Daftar Misi</span>
+            <i data-icon="chevronUp" class="quest-chevron"></i>
+          </button>
+          <div id="quest-list"></div>
+        </div>
+
+        <div id="interact-wrap">
+          <button
+            id="interaction"
+            class="interaction-button"
+            data-action="interact"
+            hidden
+          >
+            <kbd>E</kbd><span class="prompt-text"></span>
+            <span id="eat-bar" class="eat-bar"></span>
+          </button>
+        </div>
+
+        <div class="world-tools">
+          <button data-action="map" class="world-tool glass">
+            <i data-icon="map"></i><span>Jurnal Desa</span><kbd>M</kbd>
+          </button>
+          <button
+            data-action="help"
+            class="square-button glass"
+            aria-label="Panduan kontrol"
+            title="Kontrol"
+          >
+            <i data-icon="help"></i>
+          </button>
+          <div class="pouch-bar" id="pouch-bar" aria-label="Tas Bekal Oyen">
+            <button class="pouch-slot glass" data-action="useItem" data-item="salmon" title="Salmon Bakar (+45 HP, +40 Lapar) · Tombol 1">
+              <kbd>1</kbd><i data-icon="fish"></i><span class="pouch-name">Salmon</span><b id="pouch-salmon">0</b>
+            </button>
+            <button class="pouch-slot glass" data-action="useItem" data-item="milk" title="Susu Hangat (Energi Penuh, +20 HP) · Tombol 2">
+              <kbd>2</kbd><i data-icon="cup"></i><span class="pouch-name">Susu</span><b id="pouch-milk">0</b>
+            </button>
+            <button class="pouch-slot glass" data-action="useItem" data-item="catnip" title="Ramuan Catnip (Buff 25 detik) · Tombol 3">
+              <kbd>3</kbd><i data-icon="leaf"></i><span class="pouch-name">Catnip</span><b id="pouch-catnip">0</b>
+            </button>
+          </div>
+        </div>
+
+        <aside
+          id="radar-wrap"
+          class="radar"
+          aria-label="Radar desa mengikuti Oyen: panah kuning Oyen, titik hijau toko, titik ungu kucing warga, titik biru ikan, titik oranye tikus"
+        >
+          <span class="radar-north" aria-hidden="true">U</span>
+          <canvas id="radar" width="288" height="288" aria-hidden="true"></canvas>
+          <div class="radar-caption"><i></i> RADAR</div>
+        </aside>
+
+        <div id="control-strip" class="control-strip">
+          <span><kbd>WASD</kbd> Gerak</span>
+          <span><kbd>Shift</kbd> Lari</span>
+          <span><kbd>Spasi</kbd> Lompat</span>
+          <span><kbd>Klik</kbd>/<kbd>F</kbd> Cakar</span>
+          <span><kbd>E</kbd> Aksi/Obrol</span>
+          <span><kbd>1-3</kbd> Bekal</span>
+          <span><i data-icon="mouse"></i> Kamera</span>
+        </div>
+
+        <div id="tutorial" class="tutorial panel" hidden>
+          <span class="tutorial-symbol"><i data-icon="compass"></i></span>
+          <div>
+            <span class="tiny-label">LANGKAH PERTAMA</span>
+            <strong>Selamat datang di Willowbrook!</strong>
+            <p id="tutorial-text"></p>
+          </div>
+          <button
+            data-action="dismissTutorial"
+            aria-label="Tutup panduan"
+            class="bare"
+          >
+            <i data-icon="x"></i>
+          </button>
+        </div>
+
+        <div class="mobile-controls">
+          <div id="joystick" aria-label="Joystick gerak">
+            <div id="stick"></div>
+          </div>
+          <div class="mobile-actions">
+            <button
+              id="mobile-run"
+              aria-pressed="false"
+              aria-label="Aktifkan lari"
+            >
+              <i data-icon="run"></i>
+            </button>
+            <button id="mobile-interact" aria-label="Interaksi atau makan">
+              <i data-icon="hand"></i>
+            </button>
+            <button id="mobile-jump" aria-label="Lompat">
+              <i data-icon="jump"></i>
+            </button>
+            <button id="mobile-attack" aria-label="Mencakar tikus">
+              <i data-icon="claw"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <div id="loading" hidden>
+        <div class="loading-paw"><i data-icon="paw"></i></div>
+        <div class="tiny-label">CAT ADVENTURE</div>
+        <h2>Membangunkan Desa Willowbrook…</h2>
+        <div class="load-track"><span></span></div>
+      </div>
+
+      <div id="overlay" hidden>
+        <section
+          id="dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="dialog-title"
+          tabindex="-1"
+        ></section>
+      </div>
+
+      <div id="toasts" aria-live="polite" aria-atomic="false"></div>
+      <div id="sr-status" class="sr-only" role="status"></div>
+    </main>
+  </body>
+</html>
